@@ -1,0 +1,29 @@
+*{
+    clear: both;
+    box-sizing: border-box;
+    
+    text-align: center;
+}
+h1 > img {
+    height:100px;
+    width:200px;
+}
+
+body{
+    background-color: rgba(176, 179, 179, 0.701);
+    color: rgba(245, 245, 245, 0.932);
+}
+
+h2 , h3{
+    font-size: 20px;
+    color: whitesmoke;
+}
+h3{
+    display: inline;
+    
+}
+span{
+    display: flex;
+    
+    justify-content: space-evenly;
+}
