@@ -1,9 +1,9 @@
 # PokeSiteAPI
-Write a short sentence or two about this project and what it does. Be sure to include a link and a screenshot (we're front end devs so we can actually see our work!).
 
-**Link to project:** http://recruiters-love-seeing-live-demos.com/
 
-![Screen Shot 2021-03-12 at 10 54 54 PM](https://user-images.githubusercontent.com/70117282/111022225-53387f80-8386-11eb-88c7-8e40b9a06672.png)
+**Link to project:** (https://pokemonvero.netlify.app)
+
+![Screen Shot 2021-03-12 at 10 54 54 PM](https://media.giphy.com/media/D5o5tyJ9CxzHNskRoM/giphy.gif)
 
 ## How It's Made:
 
@@ -17,4 +17,7 @@ Used HTML and the DOM in JavaScript. With API and async, await functionality , I
 Am working on producing conditional statements for those pokemon with more than 3 evolutions
 
 
-
+## Optimization
+remove old evolutions
+create logic to allow proper evolutions to show 
+insert html moves using 

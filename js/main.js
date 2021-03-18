@@ -4,17 +4,36 @@ document.querySelector('button').addEventListener('click', getFetch)
 
 //let pokeID
 
+async function pokeHandler(){ //you have to make sure JS recognizes the following will be ayncrounous code
+  async function getFetch(url){//we want to create moudlar code and stay away frim hard coding
+    const res = await fetch(url)
+    const data= await pokeRes.json()
+    return data // if we return datawe are returning the object that has all the data
+  
+    }//here we abstracted our calls to link the data directly and all it takes is one call
+    async function getPokeInfo(pokemon) {
+      const pokeData = await getFetch('https://pokeapi.co/api/v2/pokemon/' +pokemon)
+    };
+    return pokeData;
+}
+async function postPokeSprite(pokeData){
+  const pokeHTML = `// we used interpilation to add html and js
+  <p>${pokeData.name}</p>
+  <img src = ${pokeData.spirtes.front_default}/>
+  `
+  const pokeDestination = document.getElementById("pokeContainer");
 
-async function getFetch(){
+  pokeDestination.insertAdjacentHTML("before end", pokeHTML)
+}
+  
   try{
   // when the function is called it will step outside its syncrronous structure
   const choice = document.querySelector('input').value
-  const url = 'https://pokeapi.co/api/v2/pokemon/'+choice
 
+  //const pokeRes = await fetch(url) // we created a variable that holds the first fetch
+  //const data= await pokeRes.json() // this is the same thing as res.json
+    const pokeData = await getPokeInfo(choice)
   
-
-  const pokeRes = await fetch(url) // we created a variable that holds the first fetch
-  const pokeData = await pokeRes.json()// this is the same thing as res.json
   console.log(pokeData)
   pokeID = pokeData.species.url
 
@@ -27,38 +46,30 @@ async function getFetch(){
   document.querySelector('#img').src = pokeData.sprites.back_default
         
 
- 
-      
 
-  const speciesRes = await fetch(pokeID)
-  const speciesData = await speciesRes.json()
+  const speciesData = await getFetch(pokeID)
+
   console.log(speciesData)
 
 
   const evoChainUrl = speciesData.evolution_chain.url
-  const evoChainRes = await fetch(evoChainUrl)
-  const evoChainData = await evoChainRes.json()
+  const evoChainData = await getFetch(evoChainUrl)
+
   console.log(evoChainData)
 
-  const evolvesFrom = evoChainData.chain.species.name
-  const evolvesTo = evoChainData.chain.evolves_to[0].evolves_to[0].species.name
+  const basePoke = evoChainData.chain.species.name
+  const secondPoke = evoChainData.chain.evolves_to[0].species.name
+  const thirdPoke = evoChainData.chain.evolves_to[0].evolves_to[0].species.name
   
-  console.log(evolvesFrom)
-  console.log(evolvesTo)
+  console.log(basePoke)
+  console.log(thirdPoke)
 
-  const evoFromUrl1 = 'https://pokeapi.co/api/v2/pokemon/'+evolvesFrom
-  const evoToUrl1 = 'https://pokeapi.co/api/v2/pokemon/'+evolvesTo
 
-  async function pokeSprite1(pokemon){
-  const evoFromSprite1Res = await fetch(evoFromUrl1)
-  const evoFromSprite1Data = await evoFromSprite1Res.json()
-  const evoToSprite1Res = await fetch(evoToUrl1)
-  const evoToSprite1Data = await evoToSprite1Res.json()
-  console.log(evoFromSprite1Data)
-  console.log(evoToSprite1Data)
-  
-  document.querySelector('#p1').innerText = evoFromSprite1Data.name
-  document.querySelector('#img3').src = evoFromSprite1Data.sprites.front_default
+  getPokeInfo(thirdPoke)
+
+
+/*  document.querySelector('#p1').innerText = pokeData.name
+  document.querySelector('#img3').src = pokeData.sprites.front_default
 
   document.querySelector('#p2').innerText = pokeData.name
   document.querySelector('#img4').src = pokeData.sprites.front_default
@@ -67,9 +78,8 @@ async function getFetch(){
   document.querySelector('#img5').src = evoToSprite1Data.sprites.front_default
 
 
+*/
 
-
-  }pokeSprite1(evolvesTo)
   // const evoThreeUrl = 
   // const evoThreeRes = await fetch(evoThreeUrl)
   // const evoThreeData = await evoThreeRes.json()
@@ -96,12 +106,15 @@ async function getFetch(){
   catch(err){
     console.log(`err ${err}` )
   }
-}
+
 
 /*for()
+  const evoToSprite1Res = await fetch(evoToUrl1)
+  const evoToSprite1Data = await evoToSprite1Res.json()
 // this will generate these evolutions 
 //I will have to plug them into a loop
 //it will require a for of and an if statement
 first evo = data.chain.species.name
 second evo = data.chain.evolves_to[0].species.name
 third evo = data.chain.evolves_to[0].evolves_to.species*/
+
