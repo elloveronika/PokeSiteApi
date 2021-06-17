@@ -1,5 +1,5 @@
 //Example fetch using pokemonapi.co
-document.querySelector("button").addEventListener("click", pokeHandler);
+document.querySelector('button').addEventListener('click', pokeHandler);
 let dataFromFirstFetch;
 
 //let pokeID
@@ -12,36 +12,44 @@ async function pokeHandler() {
   }
 
   async function getPokeInfo(pokemon) {
-    const pokeData = await getFetch(
-      "https://pokeapi.co/api/v2/pokemon/" + pokemon
-    );
+    const pokeData = await getFetch('https://pokeapi.co/api/v2/pokemon/' + pokemon);
     return pokeData;
   }
 
-  async function postPokeSprite(pokemonData) {
-    const pokeHTML = `
-      <p>${pokemonData.name}</p>
-      <img src=${pokemonData.sprites.front_default} />
-    `;
-    const pokeDestination = document.getElementById("pokeContainer");
+  async function postPokeSprites(pokemonData) {
+    // container for ALL pokemon evolutions
+    const pokeDestination = document.getElementById('pokeContainer');
+    const pokeName = pokemonData[0].name;
+    const capitalizedPokeName = pokeName[0].toUpperCase() + pokeName.slice(1);
+    pokeDestination.innerHTML = `<h3>${capitalizedPokeName} Evolutions: </h3>`;
 
-    pokeDestination.insertAdjacentHTML("beforeend", pokeHTML);
+    //we can send all the evolution data together and loop over it
+    //to post the individual pokemon in the same function call
+
+    for (let i = 0; i < pokemonData.length; i++) {
+      // these happen TO EACH pokemon
+      const pokeHTML = `
+        <p>${pokemonData[i].name}</p>
+        <img src=${pokemonData[i].sprites.front_default} />
+      `;
+      pokeDestination.insertAdjacentHTML('beforeend', pokeHTML);
+    }
   }
 
   try {
     // when the function is called it will step outside its syncrronous structure
-    const choice = document.querySelector("input").value;
+    const choice = document.querySelector('input').value;
 
     const pokeData = await getPokeInfo(choice);
 
     console.log(pokeData);
 
-    document.querySelector("span").innerHTML = pokeData.types[0].type.name;
-    document.querySelector("#moves").innerHTML = pokeData.moves[0].move.name;
-    document.querySelector("#moves2").innerHTML = pokeData.moves[1].move.name;
-    document.querySelector("#moves3").innerHTML = pokeData.moves[2].move.name;
-    document.querySelector("#img1").src = pokeData.sprites.front_default;
-    document.querySelector("#img").src = pokeData.sprites.back_default;
+    document.querySelector('span').innerHTML = pokeData.types[0].type.name;
+    document.querySelector('#moves').innerHTML = pokeData.moves[0].move.name;
+    document.querySelector('#moves2').innerHTML = pokeData.moves[1].move.name;
+    document.querySelector('#moves3').innerHTML = pokeData.moves[2].move.name;
+    document.querySelector('#img1').src = pokeData.sprites.front_default;
+    document.querySelector('#img').src = pokeData.sprites.back_default;
 
     pokeID = pokeData.species.url;
     const speciesData = await getFetch(pokeID);
@@ -53,14 +61,31 @@ async function pokeHandler() {
 
     console.log(evoChainData);
 
-    const basePokemon = evoChainData.chain.species.name;
-    const secondPokemon = evoChainData.chain.evolves_to[0].species.name;
-    const thirdPokemon =
-      evoChainData.chain.evolves_to[0].evolves_to[0].species.name;
+    function gatherEvolutions(evolutionChain) {
+      if (evolutionChain.length === 0) {
+        return [];
+      }
+      const evolutions = evolutionChain.map((pokemonObj) => {
+        const evolutions = [pokemonObj.species.name, ...gatherEvolutions(pokemonObj.evolves_to)];
+        return evolutions;
+      });
+      return evolutions.flat(5);
+    }
 
-    postPokeSprite(await getPokeInfo(basePokemon));
-    postPokeSprite(await getPokeInfo(secondPokemon));
-    postPokeSprite(await getPokeInfo(thirdPokemon));
+    const evolutions = [
+      evoChainData.chain.species.name,
+      ...gatherEvolutions(evoChainData.chain.evolves_to),
+    ];
+
+    console.log(evolutions);
+
+    const pokemonInfos = await Promise.all(evolutions.map((pokemon) => getPokeInfo(pokemon)));
+    console.log(pokemonInfos);
+
+    postPokeSprites(pokemonInfos);
+    // postPokeSprites(await getPokeInfo(basePokemon));
+    // postPokeSprites(await getPokeInfo(secondPokemon));
+    // postPokeSprites(await getPokeInfo(thirdPokemon));
 
     // const evoThreeUrl =
     // const evoThreeRes = await fetch(evoThreeUrl)
