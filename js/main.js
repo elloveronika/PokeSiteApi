@@ -1,29 +1,36 @@
 //Example fetch using pokemonapi.co
-document.querySelector('button').addEventListener('click', getFetch)
-
+document.querySelector('button').addEventListener('click', pokeHandler)
+let dataFromFirstFetch;
 
 //let pokeID
 
 async function pokeHandler(){ //you have to make sure JS recognizes the following will be ayncrounous code
   async function getFetch(url){//we want to create moudlar code and stay away frim hard coding
     const res = await fetch(url)
-    const data= await pokeRes.json()
+    const data= await res.json()
     return data // if we return datawe are returning the object that has all the data
   
     }//here we abstracted our calls to link the data directly and all it takes is one call
     async function getPokeInfo(pokemon) {
       const pokeData = await getFetch('https://pokeapi.co/api/v2/pokemon/' +pokemon)
-    };
+    
     return pokeData;
-}
-async function postPokeSprite(pokeData){
-  const pokeHTML = `// we used interpilation to add html and js
-  <p>${pokeData.name}</p>
-  <img src = ${pokeData.spirtes.front_default}/>
-  `
+    }
+
+async function postPokeSprites(pokemonData){
   const pokeDestination = document.getElementById("pokeContainer");
 
+ 
+// we can send all the evolution data together and loop over it 
+//to post the individual pokemon in the same function call
+//these happen to EACH pokemon
+
+  const pokeHTML = ` 
+  <p>${pokeData.name}</p>
+  <img src = ${pokeData.sprites.front_default}/>
+  `;
   pokeDestination.insertAdjacentHTML("before end", pokeHTML)
+
 }
   
   try{
@@ -35,7 +42,6 @@ async function postPokeSprite(pokeData){
     const pokeData = await getPokeInfo(choice)
   
   console.log(pokeData)
-  pokeID = pokeData.species.url
 
 
   document.querySelector('span').innerHTML = pokeData.types[0].type.name
@@ -46,7 +52,7 @@ async function postPokeSprite(pokeData){
   document.querySelector('#img').src = pokeData.sprites.back_default
         
 
-
+  pokeID = pokeData.species.url
   const speciesData = await getFetch(pokeID)
 
   console.log(speciesData)
@@ -57,15 +63,17 @@ async function postPokeSprite(pokeData){
 
   console.log(evoChainData)
 
-  const basePoke = evoChainData.chain.species.name
-  const secondPoke = evoChainData.chain.evolves_to[0].species.name
-  const thirdPoke = evoChainData.chain.evolves_to[0].evolves_to[0].species.name
-  
-  console.log(basePoke)
-  console.log(thirdPoke)
+  const basePokemon = evoChainData.chain.species.name
+  const secondPokemon = evoChainData.chain.evolves_to[0].species.name
+  const thirdPokemon = evoChainData.chain.evolves_to[0].evolves_to[0].species.name
+  //below is a loop that is looping over a literal array
+  const pokemonInfos = await Promise.all([basePokemon, secondPokemon, thirdPokemon].map((pokemon) => getPokeInfo(pokemon)));
 
+  console.log(pokemonInfos)
 
-  getPokeInfo(thirdPoke)
+  // postPokeSprites(await getPokeInfo(basePokemmon))
+  // postPokeSprites(await getPokeInfo(secondPokemmon))
+  // postPokeSprites(await getPokeInfo(thirdPoke))
 
 
 /*  document.querySelector('#p1').innerText = pokeData.name
@@ -102,12 +110,13 @@ async function postPokeSprite(pokeData){
         // .then(data => {
             // console.log(data)
       // })
+  
   }
   catch(err){
     console.log(`err ${err}` )
   }
 
-
+}
 /*for()
   const evoToSprite1Res = await fetch(evoToUrl1)
   const evoToSprite1Data = await evoToSprite1Res.json()
