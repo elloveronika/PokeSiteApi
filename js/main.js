@@ -19,18 +19,21 @@ async function pokeHandler(){ //you have to make sure JS recognizes the followin
 
 async function postPokeSprites(pokemonData){
   const pokeDestination = document.getElementById("pokeContainer");
+  pokeDestination.innerHTML = ''
 
  
 // we can send all the evolution data together and loop over it 
 //to post the individual pokemon in the same function call
 //these happen to EACH pokemon
 
+for (let i = 0; i < pokemonData.length ; i++){
   const pokeHTML = ` 
   <p>${pokeData.name}</p>
   <img src = ${pokeData.sprites.front_default}/>
   `;
   pokeDestination.insertAdjacentHTML("before end", pokeHTML)
 
+  }
 }
   
   try{
