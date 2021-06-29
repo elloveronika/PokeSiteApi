@@ -28,8 +28,8 @@ async function postPokeSprites(pokemonData){
 
 for (let i = 0; i < pokemonData.length ; i++){
   const pokeHTML = ` 
-  <p>${pokeData.name}</p>
-  <img src = ${pokeData.sprites.front_default}/>
+  <p>${pokemonData[i].name}</p>
+  <img src = ${pokemonData[i].sprites.front_default}/>
   `;
   pokeDestination.insertAdjacentHTML("before end", pokeHTML)
 
