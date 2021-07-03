@@ -25,6 +25,9 @@ async function postPokeSprites(pokemonData){
 // we can send all the evolution data together and loop over it 
 //to post the individual pokemon in the same function call
 //these happen to EACH pokemon
+// we can send all the evolution data together and loop over it 
+//to post the individual pokemon in the same function call
+//these happen to EACH pokemon
 
 for (let i = 0; i < pokemonData.length ; i++){
   const pokeHTML = ` 
